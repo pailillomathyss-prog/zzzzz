@@ -1,5 +1,6 @@
 [build]
 builder = "nixpacks"
+buildCommand = "echo 'no build'"
 
 [deploy]
 startCommand = "pnpm --filter @workspace/discord-bot run start"
