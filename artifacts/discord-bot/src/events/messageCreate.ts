@@ -10,6 +10,7 @@ import { lockCommand } from '../commands/lock.js';
 import { unlockCommand } from '../commands/unlock.js';
 import { rolepanelCommand } from '../commands/rolepanel.js';
 import { setrankCommand } from '../commands/setrank.js';
+import { giveawayCommand } from '../commands/giveaway.js';
 
 const PREFIX = '+';
 
@@ -69,6 +70,9 @@ export async function handleMessage(message: Message): Promise<void> {
     case 'setrank':
       await setrankCommand(message);
       break;
+    case 'giveaway':
+      await giveawayCommand(message, args);
+      break;
     case 'help':
       await ch(message).send(
         '**Commandes disponibles :**\n' +
@@ -79,7 +83,8 @@ export async function handleMessage(message: Message): Promise<void> {
         '`+lock` — Verrouiller le salon (personne ne peut écrire)\n' +
         '`+unlock` — Déverrouiller le salon\n' +
         '`+rolepanel @role1 @role2 ...` — Créer un panel de rôles avec boutons\n' +
-        '`+setrank @role` — Choisir le rôle donné quand `/vivant` est dans le statut'
+        '`+setrank @role` — Choisir le rôle donné quand `/vivant` est dans le statut\n' +
+        '`+giveaway <durée> <lot>` — Lancer un giveaway (ex: `+giveaway 10m Nitro`)'
       );
       break;
     default:
