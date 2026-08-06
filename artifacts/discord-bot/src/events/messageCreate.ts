@@ -15,6 +15,7 @@ import { smashpassCommand } from '../commands/smashpass.js';
 import { setsmashCommand } from '../commands/setsmash.js';
 import { marryCommand } from '../commands/marry.js';
 import { clearCommand } from '../commands/clear.js';
+import { ruptureCommand } from '../commands/rupture.js';
 
 const PREFIX = '+';
 
@@ -88,6 +89,9 @@ export async function handleMessage(message: Message): Promise<void> {
       break;
     case 'clear':
       await clearCommand(message, args);
+      break;
+    case 'rupture':
+      await ruptureCommand(message);
       break;
     case 'help':
       await ch(message).send(
