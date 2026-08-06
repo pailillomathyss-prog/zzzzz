@@ -2,6 +2,8 @@ import { Client, GatewayIntentBits, Partials } from 'discord.js';
 import { handleMessage } from './events/messageCreate.js';
 import { handlePresenceUpdate } from './events/presenceUpdate.js';
 import { handleInteraction } from './events/interactionCreate.js';
+import { handleReactionAdd } from './events/reactionAdd.js';
+import { handleDmMessage } from './events/dmMessage.js';
 
 if (!process.env.DISCORD_TOKEN) {
   console.error('DISCORD_TOKEN manquant. Ajoutez-le dans les secrets Replit.');
@@ -16,8 +18,11 @@ const client = new Client({
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildPresences,
     GatewayIntentBits.GuildModeration,
+    GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.DirectMessages,
+    GatewayIntentBits.DirectMessageReactions,
   ],
-  partials: [Partials.Message, Partials.Channel],
+  partials: [Partials.Message, Partials.Channel, Partials.Reaction, Partials.User],
 });
 
 client.once('ready', () => {
@@ -25,9 +30,17 @@ client.once('ready', () => {
   console.log(`📡 Serveurs : ${client.guilds.cache.size}`);
 });
 
-client.on('messageCreate', handleMessage);
+client.on('messageCreate', (msg) => {
+  if (!msg.guild) {
+    handleDmMessage(msg, client);
+  } else {
+    handleMessage(msg);
+  }
+});
+
 client.on('presenceUpdate', handlePresenceUpdate);
 client.on('interactionCreate', handleInteraction);
+client.on('messageReactionAdd', handleReactionAdd);
 
 client.on('error', (err) => {
   console.error('Erreur Discord :', err.message);

@@ -2,5 +2,7 @@
   "rankRoleId": null,
   "antiLinkEnabled": true,
   "antiLinkExemptRoles": [],
-  "rolePanels": {}
+  "rolePanels": {},
+  "smashChannelId": null,
+  "smashMessages": []
 }

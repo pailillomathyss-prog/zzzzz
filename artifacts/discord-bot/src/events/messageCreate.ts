@@ -11,6 +11,8 @@ import { unlockCommand } from '../commands/unlock.js';
 import { rolepanelCommand } from '../commands/rolepanel.js';
 import { setrankCommand } from '../commands/setrank.js';
 import { giveawayCommand } from '../commands/giveaway.js';
+import { smashpassCommand } from '../commands/smashpass.js';
+import { setsmashCommand } from '../commands/setsmash.js';
 
 const PREFIX = '+';
 
@@ -73,6 +75,12 @@ export async function handleMessage(message: Message): Promise<void> {
     case 'giveaway':
       await giveawayCommand(message, args);
       break;
+    case 'smashpass':
+      await smashpassCommand(message);
+      break;
+    case 'setsmash':
+      await setsmashCommand(message);
+      break;
     case 'help':
       await ch(message).send(
         '**Commandes disponibles :**\n' +
@@ -84,7 +92,9 @@ export async function handleMessage(message: Message): Promise<void> {
         '`+unlock` — Déverrouiller le salon\n' +
         '`+rolepanel @role1 @role2 ...` — Créer un panel de rôles avec boutons\n' +
         '`+setrank @role` — Choisir le rôle donné quand `/vivant` est dans le statut\n' +
-        '`+giveaway <durée> <lot>` — Lancer un giveaway (ex: `+giveaway 10m Nitro`)'
+        '`+giveaway <durée> <lot>` — Lancer un giveaway (ex: `+giveaway 10m Nitro`)\n' +
+        '`+setsmash #salon` — Configurer le salon de publication smash or pass\n' +
+        '`+smashpass` — Lancer un smash or pass (réaction 🔥 → DM → photo)'
       );
       break;
     default:
