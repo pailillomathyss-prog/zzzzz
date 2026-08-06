@@ -1,4 +1,4 @@
-import { Message, PermissionFlagsBits } from 'discord.js';
+import { Message, PermissionFlagsBits, GuildTextBasedChannel } from 'discord.js';
 import { ch } from '../utils/channel.js';
 
 const EMOJI = '🎉';
@@ -36,40 +36,52 @@ export async function giveawayCommand(message: Message, args: string[]): Promise
   const prize = args.slice(1).join(' ');
   const endsAt = Math.floor((Date.now() + duration) / 1000);
 
-  // Message simple, aucun panel
-  const giveawayMsg = await ch(message).send(
+  // Stocker la référence au canal maintenant (avant la suppression éventuelle du message)
+  const targetChannel = message.channel as GuildTextBasedChannel;
+
+  const giveawayMsg = await targetChannel.send(
     `**GIVEAWAY** — ${prize}\nRéagis avec ${EMOJI} pour participer !\nFin <t:${endsAt}:R>`
   );
 
   await giveawayMsg.react(EMOJI);
 
-  // Supprimer la commande
   try { await message.delete(); } catch { /* ignorer */ }
 
   setTimeout(async () => {
     try {
-      const fetched = await giveawayMsg.fetch();
-      const reaction = fetched.reactions.cache.get(EMOJI);
+      // Refetch complet du message pour avoir les réactions à jour
+      const fetched = await giveawayMsg.fetch(true);
+
+      // Chercher la réaction 🎉 de façon robuste
+      const reaction =
+        fetched.reactions.cache.get(EMOJI) ??
+        fetched.reactions.cache.find((r) => r.emoji.name === EMOJI);
 
       if (!reaction) {
-        await ch(message).send(`Giveaway **${prize}** terminé — aucune participation.`);
+        await targetChannel.send(`Giveaway **${prize}** terminé — aucune participation.`);
         return;
       }
 
+      // Récupérer tous les utilisateurs ayant réagi
       const users = await reaction.users.fetch();
       const participants = users.filter((u) => !u.bot);
 
       if (participants.size === 0) {
-        await ch(message).send(`Giveaway **${prize}** terminé — aucune participation.`);
+        await targetChannel.send(`Giveaway **${prize}** terminé — aucune participation.`);
         return;
       }
 
-      const winner = participants.random();
-      await ch(message).send(
+      const winnerArray = [...participants.values()];
+      const winner = winnerArray[Math.floor(Math.random() * winnerArray.length)];
+
+      await targetChannel.send(
         `Giveaway terminé ! Félicitations ${winner} tu remportes **${prize}** 🎉`
       );
-    } catch {
-      await ch(message).send(`Impossible de tirer le gagnant du giveaway **${prize}**.`);
+    } catch (err) {
+      console.error('Erreur tirage giveaway :', err);
+      try {
+        await targetChannel.send(`Impossible de tirer le gagnant du giveaway **${prize}**.`);
+      } catch { /* ignorer */ }
     }
   }, duration);
 }
