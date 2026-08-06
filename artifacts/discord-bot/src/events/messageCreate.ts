@@ -13,6 +13,7 @@ import { setrankCommand } from '../commands/setrank.js';
 import { giveawayCommand } from '../commands/giveaway.js';
 import { smashpassCommand } from '../commands/smashpass.js';
 import { setsmashCommand } from '../commands/setsmash.js';
+import { marryCommand } from '../commands/marry.js';
 
 const PREFIX = '+';
 
@@ -80,6 +81,9 @@ export async function handleMessage(message: Message): Promise<void> {
       break;
     case 'setsmash':
       await setsmashCommand(message);
+      break;
+    case 'marry':
+      await marryCommand(message);
       break;
     case 'help':
       await ch(message).send(
