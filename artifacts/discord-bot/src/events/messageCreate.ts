@@ -14,6 +14,7 @@ import { giveawayCommand } from '../commands/giveaway.js';
 import { smashpassCommand } from '../commands/smashpass.js';
 import { setsmashCommand } from '../commands/setsmash.js';
 import { marryCommand } from '../commands/marry.js';
+import { clearCommand } from '../commands/clear.js';
 
 const PREFIX = '+';
 
@@ -84,6 +85,9 @@ export async function handleMessage(message: Message): Promise<void> {
       break;
     case 'marry':
       await marryCommand(message);
+      break;
+    case 'clear':
+      await clearCommand(message, args);
       break;
     case 'help':
       await ch(message).send(
