@@ -1,5 +1,6 @@
-import { Message, PermissionFlagsBits } from 'discord.js';
+import { Message } from 'discord.js';
 import { ch } from '../utils/channel.js';
+import { getMarriagePartner, saveMarriage } from '../utils/marriages.js';
 
 const ACCEPT_EMOJI = '💍';
 const REFUSE_EMOJI = '❌';
@@ -20,6 +21,11 @@ export async function marryCommand(message: Message): Promise<void> {
 
   if (target.user.bot) {
     await ch(message).send("Les bots ne se marient pas.");
+    return;
+  }
+
+  if (getMarriagePartner(message.author.id) || getMarriagePartner(target.id)) {
+    await ch(message).send('Impossible : toi ou cette personne êtes déjà marié(e). 💍');
     return;
   }
 
@@ -61,10 +67,16 @@ export async function marryCommand(message: Message): Promise<void> {
   }
 
   // Acceptation → tirage au sort
+  if (getMarriagePartner(message.author.id) || getMarriagePartner(target.id)) {
+    await proposal.edit('💔 Cette demande est annulée : toi ou cette personne êtes maintenant déjà marié(e).');
+    return;
+  }
+
   const roll = Math.floor(Math.random() * 100) + 1; // 1–100
   const success = roll <= SUCCESS_CHANCE;
 
   if (success) {
+    saveMarriage(message.author.id, target.id);
     await proposal.edit(
       `🎉 **${target.user.username}** a accepté ! (${roll}% ≤ ${SUCCESS_CHANCE}% — succès ✅)\n` +
       `Félicitations à **${message.author.username}** et **${target.user.username}** pour leur mariage ! 💍`

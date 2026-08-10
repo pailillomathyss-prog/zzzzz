@@ -12,6 +12,10 @@ export interface Config {
   rolePanels: Record<string, { messageId: string; channelId: string; roleIds: string[] }>;
   smashChannelId: string | null;
   smashMessages: string[];
+  marriages: Record<string, string>;
+  balances: Record<string, number>;
+  lastDaily: Record<string, number>;
+  shopRoles: Record<string, Array<{ roleId: string; price: number }>>;
 }
 
 export function readConfig(): Config {
@@ -24,6 +28,10 @@ export function readConfig(): Config {
       rolePanels: raw.rolePanels ?? {},
       smashChannelId: raw.smashChannelId ?? null,
       smashMessages: raw.smashMessages ?? [],
+      marriages: raw.marriages ?? {},
+      balances: raw.balances ?? {},
+      lastDaily: raw.lastDaily ?? {},
+      shopRoles: raw.shopRoles ?? {},
     };
   } catch {
     return {
@@ -33,6 +41,10 @@ export function readConfig(): Config {
       rolePanels: {},
       smashChannelId: null,
       smashMessages: [],
+      marriages: {},
+      balances: {},
+      lastDaily: {},
+      shopRoles: {},
     };
   }
 }

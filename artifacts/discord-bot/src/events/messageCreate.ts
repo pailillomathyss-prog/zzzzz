@@ -16,6 +16,9 @@ import { setsmashCommand } from '../commands/setsmash.js';
 import { marryCommand } from '../commands/marry.js';
 import { clearCommand } from '../commands/clear.js';
 import { ruptureCommand } from '../commands/rupture.js';
+import { balanceCommand, dailyCommand } from '../commands/economy.js';
+import { blackjackCommand, hitCommand, standCommand } from '../commands/blackjack.js';
+import { buyCommand, shopCommand, shopRoleCommand } from '../commands/shop.js';
 
 const PREFIX = '+';
 
@@ -93,6 +96,35 @@ export async function handleMessage(message: Message): Promise<void> {
     case 'rupture':
       await ruptureCommand(message);
       break;
+    case 'balance':
+    case 'bal':
+      await balanceCommand(message);
+      break;
+    case 'daily':
+      await dailyCommand(message);
+      break;
+    case 'blackjack':
+    case 'bj':
+      await blackjackCommand(message, args);
+      break;
+    case 'tirer':
+    case 'hit':
+      await hitCommand(message);
+      break;
+    case 'rester':
+    case 'stand':
+      await standCommand(message);
+      break;
+    case 'shop':
+      await shopCommand(message);
+      break;
+    case 'shoprole':
+      await shopRoleCommand(message, args);
+      break;
+    case 'buy':
+    case 'acheter':
+      await buyCommand(message, args);
+      break;
     case 'help':
       await ch(message).send(
         '**Commandes disponibles :**\n' +
@@ -106,7 +138,16 @@ export async function handleMessage(message: Message): Promise<void> {
         '`+setrank @role` — Choisir le rôle donné quand `/vivant` est dans le statut\n' +
         '`+giveaway <durée> <lot>` — Lancer un giveaway (ex: `+giveaway 10m Nitro`)\n' +
         '`+setsmash #salon` — Configurer le salon de publication smash or pass\n' +
-        '`+smashpass` — Lancer un smash or pass (réaction 🔥 → DM → photo)'
+        '`+smashpass` — Lancer un smash or pass (réaction 🔥 → DM → photo)\n' +
+        '`+marry @user` — Faire une demande en mariage (avec chance de réussite)\n' +
+        '`+rupture @user` — Rompre avec son/sa partenaire\n' +
+        '`+balance` — Voir son solde de pièces\n' +
+        '`+daily` — Récupérer 500 pièces toutes les 24 heures\n' +
+        '`+blackjack <mise>` — Jouer au blackjack avec une mise de 50 à 500\n' +
+        '`+tirer` / `+rester` — Jouer son tour de blackjack\n' +
+        '`+shop` — Voir les rôles disponibles à l’achat\n' +
+        '`+buy <numéro>` — Acheter un rôle du shop\n' +
+        '`+shoprole @role <prix>` — Ajouter ou modifier un rôle du shop (staff)'
       );
       break;
     default:

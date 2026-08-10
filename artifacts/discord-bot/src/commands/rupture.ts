@@ -1,5 +1,6 @@
 import { Message } from 'discord.js';
 import { ch } from '../utils/channel.js';
+import { getMarriagePartner, removeMarriage } from '../utils/marriages.js';
 
 const MESSAGES = [
   "C'est fini. 💔",
@@ -27,6 +28,15 @@ export async function ruptureCommand(message: Message): Promise<void> {
     return;
   }
 
+  if (
+    getMarriagePartner(message.author.id) !== target.id ||
+    getMarriagePartner(target.id) !== message.author.id
+  ) {
+    await ch(message).send(`Tu n'es pas marié(e) avec **${target.user.username}**.`);
+    return;
+  }
+
+  removeMarriage(message.author.id, target.id);
   const phrase = MESSAGES[Math.floor(Math.random() * MESSAGES.length)];
 
   await ch(message).send(
