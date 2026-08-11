@@ -4,6 +4,7 @@ import { handlePresenceUpdate } from './events/presenceUpdate.js';
 import { handleInteraction } from './events/interactionCreate.js';
 import { handleReactionAdd } from './events/reactionAdd.js';
 import { handleDmMessage } from './events/dmMessage.js';
+import { resumeGiveaways } from './utils/giveaways.js';
 
 if (!process.env.DISCORD_TOKEN) {
   console.error('DISCORD_TOKEN manquant. Ajoutez-le dans les secrets Replit.');
@@ -28,6 +29,7 @@ const client = new Client({
 client.once('ready', () => {
   console.log(`✅ Bot connecté en tant que ${client.user?.tag}`);
   console.log(`📡 Serveurs : ${client.guilds.cache.size}`);
+  resumeGiveaways(client);
 });
 
 client.on('messageCreate', (msg) => {

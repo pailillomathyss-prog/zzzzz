@@ -1,6 +1,7 @@
 import { Message } from 'discord.js';
 import { ch } from '../utils/channel.js';
 import { addBalance, getBalance, spendBalance } from '../utils/economy.js';
+import { readConfig, writeConfig } from '../utils/config.js';
 
 type Card = { rank: string; suit: string; value: number };
 type Game = {
@@ -28,6 +29,11 @@ const RANKS: Array<[string, number]> = [
   ['Q', 10],
   ['K', 10],
 ];
+
+// Recharger une main active si le processus a été redémarré.
+for (const [key, savedGame] of Object.entries(readConfig().activeBlackjack)) {
+  games.set(key, savedGame);
+}
 
 function gameKey(message: Message): string {
   return `${message.guild!.id}:${message.author.id}`;
@@ -72,6 +78,9 @@ async function finish(
   details: string
 ): Promise<void> {
   games.delete(keyLabel(message));
+  const config = readConfig();
+  delete config.activeBlackjack[keyLabel(message)];
+  writeConfig(config);
   const value = result === 'win' ? game.bet * 2 : result === 'tie' ? game.bet : 0;
   if (value > 0) addBalance(message.guild!.id, message.author.id, value);
   const payout = result === 'win' ? `Tu gagnes ${value} pièces.` : result === 'tie' ? `Mise remboursée : ${value} pièces.` : 'Ta mise est perdue.';
@@ -107,6 +116,9 @@ export async function blackjackCommand(message: Message, args: string[]): Promis
     dealer: [deck.shift()!, deck.shift()!],
   };
   games.set(key, game);
+  const config = readConfig();
+  config.activeBlackjack[key] = game;
+  writeConfig(config);
 
   const playerTotal = handValue(game.player);
   if (playerTotal === 21) {
@@ -139,6 +151,9 @@ export async function hitCommand(message: Message): Promise<void> {
   }
 
   game.player.push(game.deck.shift()!);
+  const config = readConfig();
+  config.activeBlackjack[gameKey(message)] = game;
+  writeConfig(config);
   const total = handValue(game.player);
   if (total > 21) {
     await finish(message, game, 'lose', `🃏 Tes cartes : **${cards(game.player)}** (${total}).`);

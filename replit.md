@@ -30,6 +30,7 @@ Bot Discord avec préfixe `+`, modération, anti-lien, panel de rôles et rang a
 - **Anti-lien** : supprime automatiquement tous les liens (URLs, invitations Discord, apps...). Les membres avec `Gérer les messages` sont exemptés.
 - **Panel de rôles** : boutons cliquables pour obtenir/retirer des rôles. Configurable avec `+rolepanel`.
 - **Rang auto** : détecte `/vivant` dans le statut personnalisé Discord. Configurer le rôle avec `+setrank @role`.
+- **Données persistantes** : toutes les configurations et données du bot sont sauvegardées dans `data/config.json`. Sur Railway, monter un Volume sur le chemin `/app/data` pour conserver les données entre les redéploiements.
 
 ## Stack
 
