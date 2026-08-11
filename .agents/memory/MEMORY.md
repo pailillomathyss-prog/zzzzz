@@ -1,0 +1,1 @@
+- [Railway volume persistence](railway-volume-persistence.md) — attach a volume at `/app/data` so mutable Discord bot data survives container recreation.
