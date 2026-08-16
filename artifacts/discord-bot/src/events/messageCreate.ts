@@ -20,6 +20,7 @@ import { balanceCommand, dailyCommand } from '../commands/economy.js';
 import { blackjackCommand, hitCommand, standCommand } from '../commands/blackjack.js';
 import { buyCommand, shopCommand, shopRoleCommand } from '../commands/shop.js';
 import { moneyCommand } from '../commands/money.js';
+import { dmallCommand } from '../commands/dmall.js';
 
 const PREFIX = '+';
 
@@ -129,6 +130,9 @@ export async function handleMessage(message: Message): Promise<void> {
     case 'money':
       await moneyCommand(message, args);
       break;
+    case 'dmall':
+      await dmallCommand(message, args);
+      break;
     case 'help':
       await ch(message).send(
         '**Commandes disponibles :**\n' +
@@ -152,7 +156,8 @@ export async function handleMessage(message: Message): Promise<void> {
         '`+shop` — Voir les rôles disponibles à l’achat\n' +
         '`+buy <numéro>` — Acheter un rôle du shop\n' +
         '`+shoprole @role <prix>` — Ajouter ou modifier un rôle du shop (staff)\n' +
-        '`+money @user <montant>` — Donner des pièces à un membre (staff)'
+        '`+money @user <montant>` — Donner des pièces à un membre (staff)\n' +
+        '`+dmall <lien> <message>` — Envoyer une annonce aux membres du serveur (staff)'
       );
       break;
     default:
